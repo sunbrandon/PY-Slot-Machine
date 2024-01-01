@@ -1,6 +1,45 @@
+import random                                                           # import a random module, similar to #include in c++
+
 MAX_LINES = 3                                                           # global const variable
 MAX_BET = 100
 MIN_BET = 1
+
+ROWS = 3
+COLS = 3
+
+symbol_count = {                                                        # dictionary?
+    "A": 2,
+    "B": 4,
+    "C": 6,
+    "D": 8
+}
+
+def get_slot_machine_spid(rows, cols, symbols):
+    all_symbols = []
+    for symbol, symbol_count in symbols.items():                        # loop through dictionary item, ex. for "A", 2
+        for _ in range(symbol_count):                                   # for (random variable) in 2
+            all_symbols.append(symbol)
+
+    columns = []
+    for _ in range(cols):
+        column = []
+        current_symbols = all_symbols[:]                                # colon in all_symbols means to copy into current_symbols
+        for _ in range(rows):
+            value = random.choice(current_symbols)                      # chooses random value from all_symbols list
+            current_symbols.remove(value)                               # iterates in current_symbols and removes first instance of value parameter
+            column.append(value)
+
+        columns.append(column)
+
+    return columns
+
+def print_slot_machine(columns):
+    for row in range(len(columns[0])):                                  # len = length
+        for i, column in enumerate(columns):
+            if i != len(columns) - 1:                                   # checks if i reached the end of columns
+                print(column[row], "|")
+            else:
+                print(columns[row])
 
 def deposit():                                                          # def = function
     while True:                                                         # while loop checks if user input is valid, if not ask again
@@ -61,3 +100,5 @@ def main():                                                             # main f
 
 
 main()
+
+# 33:58
