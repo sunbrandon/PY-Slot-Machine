@@ -14,7 +14,29 @@ symbol_count = {                                                        # dictio
     "D": 8
 }
 
-def get_slot_machine_spid(rows, cols, symbols):
+symbol_value = {                                                        # dictionary?
+    "A": 5,
+    "B": 4,
+    "C": 3,
+    "D": 2
+}
+
+def check_winnings(columns, lines, bet, values):
+    winnings = 0
+    winning_lines = []
+    for line in range(lines):
+        symbol = columns[0][line]
+        for column in columns:
+            symbol_to_check = column[line]
+            if symbol != symbol_to_check:
+                break
+        else:                                                          # for-else loop, if for loop breaks else doesn't execute
+            winnings += values[symbol] * bet
+            winning_lines.append(line + 1)
+
+    return winnings, winning_lines
+
+def get_slot_machine_spin(rows, cols, symbols):
     all_symbols = []
     for symbol, symbol_count in symbols.items():                        # loop through dictionary item, ex. for "A", 2
         for _ in range(symbol_count):                                   # for (random variable) in 2
@@ -37,9 +59,11 @@ def print_slot_machine(columns):
     for row in range(len(columns[0])):                                  # len = length
         for i, column in enumerate(columns):
             if i != len(columns) - 1:                                   # checks if i reached the end of columns
-                print(column[row], "|")
+                print(column[row], end=" | ")
             else:
-                print(columns[row])
+                print(column[row], end="")
+
+        print()
 
 def deposit():                                                          # def = function
     while True:                                                         # while loop checks if user input is valid, if not ask again
@@ -83,8 +107,7 @@ def get_bet():
 
     return amount
 
-def main():                                                             # main function where program is called
-    balance = deposit()                                                 # runs the deposit function and puts the value into variable "balance"
+def spin(balance):
     lines = get_number_of_lines()
     while True:
         bet = get_bet()
@@ -98,7 +121,23 @@ def main():                                                             # main f
     
     print(f"You are betting ${bet} on {lines} lines. Total bet is equal to: ${total_bet}")
 
+    slots = get_slot_machine_spin(ROWS, COLS, symbol_count)
+    print_slot_machine(slots)
+    winnings, winning_lines = check_winnings(slots, lines, bet, symbol_value)
+    print(f"You won {winnings}.")
+    print(f"You won on lines:", *winning_lines)
+    return winnings - total_bet
+
+def main():                                                             # main function where program is called
+    balance = deposit()                                                 # runs the deposit function and puts the value into variable "balance"
+    while True:
+        print(f"Current balance is ${balance}")
+        answer = input("Press enter to play (q to quit).")
+        if answer == "q":
+            break
+        balance += spin(balance)
+
+    print(f"You left with ${balance}")
+
 
 main()
-
-# 33:58
